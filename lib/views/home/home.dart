@@ -1,12 +1,13 @@
-import 'package:appwritetest/services/home/home_service.dart';
+import 'package:appwritetest/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController pwController = TextEditingController();
-  final HomeService homeService = HomeService();
+  final AuthService authService = GetIt.I.get<AuthService>();
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +35,18 @@ class Home extends StatelessWidget {
                 SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () async {
-                    await homeService.createUser(
+                    await authService.createUser(
                       emailController.value.text,
                       pwController.value.text,
                     );
                   },
                   child: const Text("Create User"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    await authService.getSessions();
+                  },
+                  child: const Text("Get Sessions"),
                 )
               ],
             ),

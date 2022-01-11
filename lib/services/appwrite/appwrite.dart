@@ -15,4 +15,5 @@ class Appwrite {
 
   Account get account => Account(client);
   Database get database => Database(client);
+  Realtime get realtime => Realtime(client);
 }
