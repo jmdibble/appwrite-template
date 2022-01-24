@@ -1,4 +1,4 @@
-import 'package:appwritetest/views/home/home.dart';
+import 'package:appwritetest/auth_handler.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
@@ -7,11 +7,12 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Appwrite Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home(),
+      home: const AuthHandler(),
     );
   }
 }

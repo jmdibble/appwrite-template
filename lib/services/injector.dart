@@ -13,8 +13,6 @@ Future<void> setupInjector() async {
 
   // Auth
   getIt.registerSingleton<AuthService>(AuthService());
-  AuthService authService = getIt.get<AuthService>();
-  // await authService.init();
 
   // Home
   getIt.registerSingleton<HomeService>(HomeService());

@@ -1,34 +1,13 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:appwritetest/services/appwrite/appwrite.dart';
-import 'package:get_it/get_it.dart';
+import 'package:appwritetest/services/injector.dart';
 
 class AuthService {
-  final Appwrite _appwrite = GetIt.instance.get<Appwrite>();
-  RealtimeSubscription? accountSub;
+  final Appwrite _appwrite = getIt.get<Appwrite>();
+  bool isSignedIn = false;
 
-  Future<void> init() async {
-    SessionList sessions = await _appwrite.account.getSessions();
-    sessions.sessions.forEach((session) {
-      if (session.current) {
-        accountSub = _appwrite.realtime.subscribe(['account']);
-      }
-    });
-
-    if (accountSub != null) {
-      accountSub!.stream.listen((event) async {
-        await handleSession(event);
-      });
-    }
-  }
-
-  Future<void> handleSession(RealtimeMessage event) async {
-    if (event.event == "account.sessions.delete") {
-      print("LOG OUT USER");
-    }
-  }
-
-  Future<void> createUser(String email, String password) async {
+  Future<bool> createUser(String email, String password) async {
     try {
       final User userResponse = await _appwrite.account.create(
         userId: "unique()",
@@ -38,32 +17,39 @@ class AuthService {
       print("USER CREATED: ${userResponse.email}");
 
       // Create session for user
-      Session session = await createSessionAndSubscription(email, password);
+      Session? session = await createSession(email, password);
 
       // Store user in DB
-      final dbResponse = await addUserToDb(session.userId, email, password);
-      print("USER STORED: ${dbResponse.$id}");
+      if (session != null) {
+        final Document? dbResponse =
+            await addUserToDb(session.userId, email, password);
+        if (dbResponse != null) {
+          print("USER STORED: ${dbResponse.$id}");
+          return true;
+        }
+      }
+      return false;
     } catch (e) {
       print(e);
-      rethrow;
+      return false;
     }
   }
 
-  Future<Session> createSessionAndSubscription(
-      String email, String password) async {
+  Future<Session?> createSession(String email, String password) async {
     try {
       final Session session = await _appwrite.account
           .createSession(email: email, password: password);
+
       print("SESSION ACTIVE: ${session.current} - ${session.$id}");
 
       return session;
     } catch (e) {
       print(e);
-      rethrow;
+      return null;
     }
   }
 
-  Future<Document> addUserToDb(
+  Future<Document?> addUserToDb(
       String uid, String email, String password) async {
     try {
       final Document response = await _appwrite.database.createDocument(
@@ -79,7 +65,21 @@ class AuthService {
       return response;
     } catch (e) {
       print(e);
-      rethrow;
+      return null;
+    }
+  }
+
+  Future<Session?> getActiveSession() async {
+    try {
+      final Session? response =
+          await _appwrite.account.getSession(sessionId: 'current');
+
+      if (response != null) {
+        return response;
+      }
+    } catch (e) {
+      print(e);
+      return null;
     }
   }
 
@@ -93,8 +93,20 @@ class AuthService {
     });
   }
 
-  Future<void> deleteSession(String sessionId) async {
-    final response =
-        await _appwrite.account.deleteSession(sessionId: sessionId);
+  Future<bool> deleteSession() async {
+    try {
+      final Session? response = await getActiveSession();
+
+      if (response != null) {
+        await _appwrite.account.deleteSession(sessionId: response.$id);
+        isSignedIn = false;
+        print("LOGGED OUT SESSION - ${response.$id}");
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 }
