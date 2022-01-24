@@ -1,7 +1,9 @@
 import 'package:appwritetest/enums/auth_state.dart';
+import 'package:appwritetest/enums/page_state.dart';
 import 'package:appwritetest/view_models/auth_handler/auth_handler_view_model.dart';
 import 'package:appwritetest/views/home/home_view.dart';
 import 'package:appwritetest/views/login/login_view.dart';
+import 'package:appwritetest/views/register/register_view.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
@@ -14,7 +16,6 @@ class AuthHandler extends StatelessWidget {
         viewModelBuilder: () => AuthHandlerViewModel(),
         onModelReady: (m) async => await m.setSignedIn(),
         builder: (_, m, child) {
-          print(m.isSignedIn);
           if (m.authState == AuthState.initial) {
             return Scaffold(
               body: Center(
@@ -22,7 +23,13 @@ class AuthHandler extends StatelessWidget {
               ),
             );
           } else {
-            return m.isSignedIn ? HomeView() : LoginView();
+            if (m.isSignedIn) {
+              return HomeView();
+            } else {
+              return m.pageState == PageState.login
+                  ? LoginView(m: m)
+                  : RegisterView(m: m);
+            }
           }
         });
   }

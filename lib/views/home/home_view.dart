@@ -1,3 +1,4 @@
+import 'package:appwritetest/auth_handler.dart';
 import 'package:appwritetest/view_models/home/home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
@@ -18,6 +19,12 @@ class HomeView extends StatelessWidget {
               ElevatedButton(
                 onPressed: () async {
                   await m.logout();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AuthHandler(),
+                    ),
+                  );
                 },
                 child: Text("Log out"),
               ),

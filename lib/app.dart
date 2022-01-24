@@ -1,5 +1,7 @@
 import 'package:appwritetest/auth_handler.dart';
+import 'package:appwritetest/view_models/auth_handler/auth_handler_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:stacked/stacked.dart';
 
 class App extends StatelessWidget {
   App({Key? key}) : super(key: key);
@@ -12,7 +14,7 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const AuthHandler(),
+      home: AuthHandler(),
     );
   }
 }

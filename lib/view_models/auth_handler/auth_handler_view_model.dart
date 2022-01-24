@@ -1,5 +1,6 @@
 import 'package:appwrite/models.dart';
 import 'package:appwritetest/enums/auth_state.dart';
+import 'package:appwritetest/enums/page_state.dart';
 import 'package:appwritetest/services/auth/auth_service.dart';
 import 'package:appwritetest/services/injector.dart';
 import 'package:stacked/stacked.dart';
@@ -9,6 +10,7 @@ class AuthHandlerViewModel extends BaseViewModel {
 
   bool get isSignedIn => _authService.isSignedIn;
   AuthState authState = AuthState.notStarted;
+  PageState pageState = PageState.login;
 
   Future<void> setSignedIn() async {
     authState = AuthState.initial;
@@ -34,12 +36,24 @@ class AuthHandlerViewModel extends BaseViewModel {
 
   Future<void> login(String email, String password) async {
     authState = AuthState.loading;
+    print("Notifying listeners...");
     notifyListeners();
     final Session? response = await _authService.createSession(email, password);
     if (response != null && response.current) {
       _authService.isSignedIn = true;
     }
     authState = AuthState.complete;
+    print("Notifying listeners...");
+    notifyListeners();
+  }
+
+  void goToLogin() {
+    pageState = PageState.login;
+    notifyListeners();
+  }
+
+  void goToSignup() {
+    pageState = PageState.signup;
     notifyListeners();
   }
 }

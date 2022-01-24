@@ -7,7 +7,8 @@ import 'package:get_it/get_it.dart';
 import 'package:stacked/stacked.dart';
 
 class RegisterView extends StatelessWidget {
-  RegisterView({Key? key}) : super(key: key);
+  RegisterView({Key? key, required this.m}) : super(key: key);
+  AuthHandlerViewModel m;
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController pwController = TextEditingController();
@@ -15,69 +16,61 @@ class RegisterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<AuthHandlerViewModel>.reactive(
-      viewModelBuilder: () => AuthHandlerViewModel(),
-      builder: (_, m, child) => Scaffold(
-        appBar: AppBar(
-          actions: [
-            IconButton(
-              onPressed: () async {
-                await authService.getSessions();
-              },
-              icon: Icon(Icons.list),
-            ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Center(
-              child: Column(
-                children: [
-                  Text(
-                    "Sign up",
-                    style: TextStyle(fontSize: 24),
-                  ),
-                  TextFormField(
-                    controller: emailController,
-                    decoration: const InputDecoration(hintText: "Email"),
-                  ),
-                  SizedBox(height: 8),
-                  TextFormField(
-                    controller: pwController,
-                    decoration: const InputDecoration(hintText: "Password"),
-                  ),
-                  SizedBox(height: 16),
-                  m.authState == AuthState.loading
-                      ? CircularProgressIndicator()
-                      : ElevatedButton(
-                          onPressed: () async {
-                            await m.register(
-                              emailController.value.text,
-                              pwController.value.text,
-                            );
-                          },
-                          child: const Text("Sign up"),
-                        ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Already have an account?"),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LoginView(),
-                            ),
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await authService.getSessions();
+            },
+            icon: Icon(Icons.list),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Column(
+              children: [
+                Text(
+                  "Sign up",
+                  style: TextStyle(fontSize: 24),
+                ),
+                TextFormField(
+                  controller: emailController,
+                  decoration: const InputDecoration(hintText: "Email"),
+                ),
+                SizedBox(height: 8),
+                TextFormField(
+                  controller: pwController,
+                  decoration: const InputDecoration(hintText: "Password"),
+                ),
+                SizedBox(height: 16),
+                m.authState == AuthState.loading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: () async {
+                          await m.register(
+                            emailController.value.text,
+                            pwController.value.text,
                           );
                         },
-                        child: Text("Log in instead"),
+                        child: const Text("Sign up"),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Already have an account?"),
+                    TextButton(
+                      onPressed: () {
+                        m.goToLogin();
+                      },
+                      child: Text("Log in instead"),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
