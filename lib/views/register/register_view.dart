@@ -1,10 +1,8 @@
 import 'package:appwritetest/enums/auth_state.dart';
 import 'package:appwritetest/services/auth/auth_service.dart';
 import 'package:appwritetest/view_models/auth_handler/auth_handler_view_model.dart';
-import 'package:appwritetest/views/login/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:stacked/stacked.dart';
 
 class RegisterView extends StatelessWidget {
   RegisterView({Key? key, required this.m}) : super(key: key);
@@ -17,16 +15,7 @@ class RegisterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await authService.getSessions();
-            },
-            icon: Icon(Icons.list),
-          ),
-        ],
-      ),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
