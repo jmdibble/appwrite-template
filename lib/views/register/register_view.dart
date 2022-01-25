@@ -12,8 +12,6 @@ class RegisterView extends StatelessWidget {
   RegisterView({Key? key, required this.m}) : super(key: key);
   AuthHandlerViewModel m;
 
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController pwController = TextEditingController();
   final AuthService authService = GetIt.I.get<AuthService>();
 
   @override
@@ -33,13 +31,19 @@ class RegisterView extends StatelessWidget {
                   ),
                   SizedBox(height: 32),
                   AWTextField(
-                    controller: emailController,
+                    controller: m.nameController,
+                    hintText: "Name",
+                  ),
+                  SizedBox(height: 16),
+                  AWTextField(
+                    controller: m.emailController,
                     hintText: "Email",
                   ),
                   SizedBox(height: 16),
                   AWTextField(
-                    controller: pwController,
+                    controller: m.pwController,
                     hintText: "Password",
+                    obscureText: true,
                   ),
                   SizedBox(height: 64),
                   m.authState == AuthState.loading
@@ -47,8 +51,9 @@ class RegisterView extends StatelessWidget {
                       : AWButton(
                           onPressed: () async {
                             await m.register(
-                              emailController.value.text,
-                              pwController.value.text,
+                              m.nameController.value.text,
+                              m.emailController.value.text,
+                              m.pwController.value.text,
                             );
                           },
                           buttonText: "Sign up",

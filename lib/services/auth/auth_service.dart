@@ -7,12 +7,13 @@ class AuthService {
   final Appwrite _appwrite = getIt.get<Appwrite>();
   bool isSignedIn = false;
 
-  Future<bool> createUser(String email, String password) async {
+  Future<bool> createUser(String name, String email, String password) async {
     try {
       final User userResponse = await _appwrite.account.create(
         userId: "unique()",
         email: email,
         password: password,
+        name: name,
       );
       print("USER CREATED: ${userResponse.email}");
 
@@ -22,7 +23,7 @@ class AuthService {
       // Store user in DB
       if (session != null) {
         final Document? dbResponse =
-            await addUserToDb(session.userId, email, password);
+            await addUserToDb(session.userId, name, email, password);
         if (dbResponse != null) {
           print("USER STORED: ${dbResponse.$id}");
           return true;
@@ -50,7 +51,7 @@ class AuthService {
   }
 
   Future<Document?> addUserToDb(
-      String uid, String email, String password) async {
+      String uid, String name, String email, String password) async {
     try {
       final Document response = await _appwrite.database.createDocument(
         collectionId: "61dd74dec2e03",
@@ -59,6 +60,7 @@ class AuthService {
         data: {
           "uid": uid,
           "email": email,
+          "name": name,
         },
       );
 

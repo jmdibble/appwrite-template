@@ -13,8 +13,6 @@ class LoginView extends StatelessWidget {
   LoginView({Key? key, required this.m}) : super(key: key);
   AuthHandlerViewModel m;
 
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController pwController = TextEditingController();
   final AuthService authService = GetIt.I.get<AuthService>();
 
   @override
@@ -34,13 +32,14 @@ class LoginView extends StatelessWidget {
                   ),
                   SizedBox(height: 32),
                   AWTextField(
-                    controller: emailController,
+                    controller: m.emailController,
                     hintText: "Email",
                   ),
                   SizedBox(height: 16),
                   AWTextField(
-                    controller: pwController,
+                    controller: m.pwController,
                     hintText: "Password",
+                    obscureText: true,
                   ),
                   SizedBox(height: 64),
                   m.authState == AuthState.loading
@@ -48,8 +47,8 @@ class LoginView extends StatelessWidget {
                       : AWButton(
                           onPressed: () async {
                             await m.login(
-                              emailController.value.text,
-                              pwController.value.text,
+                              m.emailController.value.text,
+                              m.pwController.value.text,
                             );
                           },
                           buttonText: "Log in",

@@ -3,9 +3,14 @@ import 'package:appwritetest/enums/auth_state.dart';
 import 'package:appwritetest/enums/page_state.dart';
 import 'package:appwritetest/services/auth/auth_service.dart';
 import 'package:appwritetest/services/injector.dart';
+import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 class AuthHandlerViewModel extends BaseViewModel {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController pwController = TextEditingController();
+
   AuthService get _authService => getIt.get<AuthService>();
 
   bool get isSignedIn => _authService.isSignedIn;
@@ -23,12 +28,15 @@ class AuthHandlerViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  Future<void> register(String email, String password) async {
+  Future<void> register(String name, String email, String password) async {
     authState = AuthState.loading;
     notifyListeners();
-    final bool response = await _authService.createUser(email, password);
+    final bool response = await _authService.createUser(name, email, password);
     if (response) {
       _authService.isSignedIn = true;
+      emailController.text = "";
+      pwController.text = "";
+      nameController.text = "";
     }
     authState = AuthState.complete;
     notifyListeners();
@@ -40,17 +48,23 @@ class AuthHandlerViewModel extends BaseViewModel {
     final Session? response = await _authService.createSession(email, password);
     if (response != null && response.current) {
       _authService.isSignedIn = true;
+      emailController.text = "";
+      pwController.text = "";
     }
     authState = AuthState.complete;
     notifyListeners();
   }
 
   void goToLogin() {
+    emailController.text = "";
+    pwController.text = "";
     pageState = PageState.login;
     notifyListeners();
   }
 
   void goToSignup() {
+    emailController.text = "";
+    pwController.text = "";
     pageState = PageState.signup;
     notifyListeners();
   }

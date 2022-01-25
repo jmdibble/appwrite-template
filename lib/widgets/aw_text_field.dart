@@ -5,10 +5,12 @@ class AWTextField extends StatelessWidget {
     Key? key,
     required this.controller,
     this.hintText,
+    this.obscureText = false,
   }) : super(key: key);
 
   final TextEditingController controller;
   final String? hintText;
+  final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,7 @@ class AWTextField extends StatelessWidget {
         padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 6),
         child: TextFormField(
           controller: controller,
+          obscureText: obscureText,
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: hintText ?? "",
