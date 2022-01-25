@@ -6,14 +6,14 @@ class CustomBG extends StatelessWidget {
     Key? key,
     required this.child,
     this.appBar = false,
-    this.appBarTitle = "",
+    this.appBarTitle,
     this.actions,
     this.leading,
   }) : super(key: key);
 
   final Widget child;
   final bool appBar;
-  final String appBarTitle;
+  final Widget? appBarTitle;
   final List<Widget>? actions;
   final Widget? leading;
 
@@ -27,7 +27,7 @@ class CustomBG extends StatelessWidget {
             AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              title: Text(appBarTitle),
+              title: appBarTitle,
               actions: actions,
               leading: leading,
             ),

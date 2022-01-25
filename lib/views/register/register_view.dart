@@ -1,5 +1,6 @@
 import 'package:appwritetest/enums/auth_state.dart';
 import 'package:appwritetest/services/auth/auth_service.dart';
+import 'package:appwritetest/theme/colors.dart';
 import 'package:appwritetest/view_models/auth_handler/auth_handler_view_model.dart';
 import 'package:appwritetest/widgets/aw_button.dart';
 import 'package:appwritetest/widgets/aw_text_field.dart';
@@ -45,6 +46,17 @@ class RegisterView extends StatelessWidget {
                     hintText: "Password",
                     obscureText: true,
                   ),
+                  SizedBox(height: 8),
+                  if (m.authState == AuthState.failed)
+                    Center(
+                      child: Text(
+                        m.authError,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Cols.softRed,
+                        ),
+                      ),
+                    ),
                   SizedBox(height: 64),
                   m.authState == AuthState.loading
                       ? CircularProgressIndicator()

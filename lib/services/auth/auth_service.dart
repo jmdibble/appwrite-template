@@ -1,11 +1,13 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
+import 'package:appwritetest/models/aw_user.dart';
 import 'package:appwritetest/services/appwrite/appwrite.dart';
 import 'package:appwritetest/services/injector.dart';
 
 class AuthService {
   final Appwrite _appwrite = getIt.get<Appwrite>();
   bool isSignedIn = false;
+  AWUser? user;
 
   Future<bool> createUser(String name, String email, String password) async {
     try {
@@ -30,6 +32,9 @@ class AuthService {
         }
       }
       return false;
+    } on AppwriteException catch (e) {
+      print(e);
+      return Future.error(e as AppwriteException);
     } catch (e) {
       print(e);
       return false;
@@ -44,6 +49,9 @@ class AuthService {
       print("SESSION ACTIVE: ${session.current} - ${session.$id}");
 
       return session;
+    } on AppwriteException catch (e) {
+      print(e);
+      return Future.error(e as AppwriteException);
     } catch (e) {
       print(e);
       return null;
@@ -71,12 +79,32 @@ class AuthService {
     }
   }
 
+  Future<AWUser?> getUserFromDb(String uid) async {
+    try {
+      final response = await _appwrite.database
+          .getDocument(collectionId: "61dd74dec2e03", documentId: uid);
+
+      user = AWUser(
+        response.data['uid'],
+        response.data['name'],
+        response.data['email'],
+      );
+      print("USER FROM DB: ${user!.uid}");
+      return user;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   Future<Session?> getActiveSession() async {
+    print("Getting active session...");
     try {
       final Session? response =
           await _appwrite.account.getSession(sessionId: 'current');
 
       if (response != null) {
+        await getUserFromDb(response.userId);
         return response;
       }
     } catch (e) {

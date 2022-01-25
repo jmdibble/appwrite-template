@@ -41,7 +41,18 @@ class LoginView extends StatelessWidget {
                     hintText: "Password",
                     obscureText: true,
                   ),
-                  SizedBox(height: 64),
+                  SizedBox(height: 8),
+                  if (m.authState == AuthState.failed)
+                    Center(
+                      child: Text(
+                        m.authError,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Cols.softRed,
+                        ),
+                      ),
+                    ),
+                  SizedBox(height: 56),
                   m.authState == AuthState.loading
                       ? CircularProgressIndicator()
                       : AWButton(

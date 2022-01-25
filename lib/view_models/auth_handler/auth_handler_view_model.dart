@@ -15,6 +15,7 @@ class AuthHandlerViewModel extends BaseViewModel {
 
   bool get isSignedIn => _authService.isSignedIn;
   AuthState authState = AuthState.notStarted;
+  String authError = "";
   PageState pageState = PageState.login;
 
   Future<void> setSignedIn() async {
@@ -31,7 +32,12 @@ class AuthHandlerViewModel extends BaseViewModel {
   Future<void> register(String name, String email, String password) async {
     authState = AuthState.loading;
     notifyListeners();
-    final bool response = await _authService.createUser(name, email, password);
+    final bool response =
+        await _authService.createUser(name, email, password).catchError((e) {
+      authState = AuthState.failed;
+      authError = e.message;
+      notifyListeners();
+    });
     if (response) {
       _authService.isSignedIn = true;
       emailController.text = "";
@@ -45,19 +51,27 @@ class AuthHandlerViewModel extends BaseViewModel {
   Future<void> login(String email, String password) async {
     authState = AuthState.loading;
     notifyListeners();
-    final Session? response = await _authService.createSession(email, password);
-    if (response != null && response.current) {
+    final Session? session =
+        await _authService.createSession(email, password).catchError((e) {
+      authState = AuthState.failed;
+      authError = e.message;
+      notifyListeners();
+    });
+    if (session != null && session.current) {
       _authService.isSignedIn = true;
       emailController.text = "";
       pwController.text = "";
+      await _authService.getUserFromDb(session.userId);
+      authState = AuthState.complete;
+      notifyListeners();
     }
-    authState = AuthState.complete;
-    notifyListeners();
   }
 
   void goToLogin() {
     emailController.text = "";
     pwController.text = "";
+    authError = "";
+    authState = AuthState.complete;
     pageState = PageState.login;
     notifyListeners();
   }
@@ -65,6 +79,8 @@ class AuthHandlerViewModel extends BaseViewModel {
   void goToSignup() {
     emailController.text = "";
     pwController.text = "";
+    authError = "";
+    authState = AuthState.complete;
     pageState = PageState.signup;
     notifyListeners();
   }

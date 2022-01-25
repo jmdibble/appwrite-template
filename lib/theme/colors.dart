@@ -22,4 +22,5 @@ class Cols {
   static Color brightBlue = Color(0xFF0F24E0);
   static Color lightBlue = Color(0xFF344CCA);
   static Color lightGrey = Color(0xFFD5D5DB);
+  static Color softRed = Color(0xFFFE546E);
 }

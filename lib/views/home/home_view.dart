@@ -1,4 +1,5 @@
 import 'package:appwritetest/auth_handler.dart';
+import 'package:appwritetest/theme/colors.dart';
 import 'package:appwritetest/theme/styles.dart';
 import 'package:appwritetest/view_models/home/home_view_model.dart';
 import 'package:appwritetest/widgets/aw_button.dart';
@@ -18,7 +19,19 @@ class HomeView extends StatelessWidget {
         extendBodyBehindAppBar: true,
         body: CustomBG(
           appBar: true,
-          appBarTitle: DateFormat("EEEE, dd MMM").format(DateTime.now()),
+          appBarTitle: Column(
+            children: [
+              Text(
+                "Hi, ${m.user!.name}",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
+              ),
+              SizedBox(height: 6),
+              Text(DateFormat("EEEE, dd MMM").format(DateTime.now())),
+            ],
+          ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -35,7 +48,8 @@ class HomeView extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 Text(
-                    "This is your homepage, you can do whatever you like here..."),
+                  "This is your homepage, you can do whatever you like here...",
+                ),
                 SizedBox(height: 64),
                 AWButton(
                   onPressed: () async {
