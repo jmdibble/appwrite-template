@@ -36,14 +36,12 @@ class AuthHandlerViewModel extends BaseViewModel {
 
   Future<void> login(String email, String password) async {
     authState = AuthState.loading;
-    print("Notifying listeners...");
     notifyListeners();
     final Session? response = await _authService.createSession(email, password);
     if (response != null && response.current) {
       _authService.isSignedIn = true;
     }
     authState = AuthState.complete;
-    print("Notifying listeners...");
     notifyListeners();
   }
 
