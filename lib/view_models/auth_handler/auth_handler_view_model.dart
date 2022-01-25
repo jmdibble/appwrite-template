@@ -84,4 +84,13 @@ class AuthHandlerViewModel extends BaseViewModel {
     pageState = PageState.signup;
     notifyListeners();
   }
+
+  void goToPassword() {
+    emailController.text = "";
+    pwController.text = "";
+    authError = "";
+    authState = AuthState.complete;
+    pageState = PageState.forgotPassword;
+    notifyListeners();
+  }
 }
