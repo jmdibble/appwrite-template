@@ -55,12 +55,7 @@ class ForgotPasswordView extends StatelessWidget {
                   m.authState == AuthState.loading
                       ? CircularProgressIndicator()
                       : AWButton(
-                          onPressed: () async {
-                            await m.login(
-                              m.emailController.value.text,
-                              m.pwController.value.text,
-                            );
-                          },
+                          onPressed: () async {},
                           buttonText: "Send reset email",
                         ),
                   SizedBox(height: 24),

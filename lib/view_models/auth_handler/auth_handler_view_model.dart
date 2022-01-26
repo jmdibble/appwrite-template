@@ -21,7 +21,10 @@ class AuthHandlerViewModel extends BaseViewModel {
   Future<void> setSignedIn() async {
     authState = AuthState.initial;
     notifyListeners();
-    final Session? session = await _authService.getActiveSession();
+    final Session? session =
+        await _authService.getActiveSession().catchError((e) {
+      print("Sign-in: No active session found");
+    });
     if (session != null && session.current) {
       _authService.isSignedIn = true;
     }
@@ -32,20 +35,20 @@ class AuthHandlerViewModel extends BaseViewModel {
   Future<void> register(String name, String email, String password) async {
     authState = AuthState.loading;
     notifyListeners();
-    final bool response =
+    final bool? response =
         await _authService.createUser(name, email, password).catchError((e) {
       authState = AuthState.failed;
       authError = e.message;
       notifyListeners();
     });
-    if (response) {
+    if (response != null && response) {
       _authService.isSignedIn = true;
       emailController.text = "";
       pwController.text = "";
       nameController.text = "";
+      authState = AuthState.complete;
+      notifyListeners();
     }
-    authState = AuthState.complete;
-    notifyListeners();
   }
 
   Future<void> login(String email, String password) async {

@@ -9,7 +9,7 @@ class AuthService {
   bool isSignedIn = false;
   AWUser? user;
 
-  Future<bool> createUser(String name, String email, String password) async {
+  Future<bool?> createUser(String name, String email, String password) async {
     try {
       final User userResponse = await _appwrite.account.create(
         userId: "unique()",
@@ -34,7 +34,7 @@ class AuthService {
       return false;
     } on AppwriteException catch (e) {
       print(e);
-      return Future.error(e as AppwriteException);
+      return Future.error(e);
     } catch (e) {
       print(e);
       return false;
@@ -51,7 +51,7 @@ class AuthService {
       return session;
     } on AppwriteException catch (e) {
       print(e);
-      return Future.error(e as AppwriteException);
+      return Future.error(e);
     } catch (e) {
       print(e);
       return null;
@@ -91,6 +91,9 @@ class AuthService {
       );
       print("USER FROM DB: ${user!.uid}");
       return user;
+    } on AppwriteException catch (e) {
+      print(e);
+      return Future.error(e);
     } catch (e) {
       print(e);
       return null;
@@ -107,6 +110,9 @@ class AuthService {
         await getUserFromDb(response.userId);
         return response;
       }
+    } on AppwriteException catch (e) {
+      print(e);
+      return Future.error(e);
     } catch (e) {
       print(e);
       return null;
@@ -137,6 +143,20 @@ class AuthService {
     } catch (e) {
       print(e);
       return false;
+    }
+  }
+
+  Future<void> sendResetEmail(String email) async {
+    try {
+      Future result = _appwrite.account.createRecovery(
+        email: email,
+        url: 'https://example.com',
+      );
+    } on AppwriteException catch (e) {
+      print(e);
+      throw e;
+    } catch (e) {
+      print(e);
     }
   }
 }
