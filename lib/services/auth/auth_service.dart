@@ -28,6 +28,11 @@ class AuthService {
             await addUserToDb(session.userId, name, email, password);
         if (dbResponse != null) {
           print("USER STORED: ${dbResponse.$id}");
+          user = AWUser(
+            uid: dbResponse.data['uid'],
+            name: dbResponse.data['name'],
+            email: dbResponse.data['email'],
+          );
           return true;
         }
       }
@@ -85,9 +90,9 @@ class AuthService {
           .getDocument(collectionId: "61dd74dec2e03", documentId: uid);
 
       user = AWUser(
-        response.data['uid'],
-        response.data['name'],
-        response.data['email'],
+        uid: response.data['uid'],
+        name: response.data['name'],
+        email: response.data['email'],
       );
       print("USER FROM DB: ${user!.uid}");
       return user;

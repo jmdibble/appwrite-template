@@ -3,5 +3,9 @@ class AWUser {
   final String name;
   final String email;
 
-  AWUser(this.uid, this.name, this.email);
+  AWUser({
+    required this.uid,
+    required this.name,
+    required this.email,
+  });
 }
